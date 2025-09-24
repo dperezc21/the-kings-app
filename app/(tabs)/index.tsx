@@ -10,14 +10,16 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   return (
     <View style={styles.container}>
-      <Text>The kings Barber</Text>
+      <Text style={styles.headerText}>The kings Barber</Text>
+      <View style={styles.containerButtons}>
       {buttons_value.map((value: BarberPrice) => (
         <Pressable onPress={() => { setServiceSelected(value); setModalVisible(true); }} 
                   key={value.service} style={styles.button_select}  
                   android_ripple={{color: '#ccc'}}>
             <Text style={textButton.style}>{ value.service }</Text>
         </Pressable>
-      ))}    
+      ))} 
+      </View>   
       <ConfirmModal serviceSeleted={serviceSeleted} modalVisible={modalVisible} setModalVisible={setModalVisible} />
     </View>
   );
@@ -25,6 +27,15 @@ export default function HomeScreen() {
 
 
 const styles = StyleSheet.create({   
+  containerButtons: {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: 10,
+      padding: 10,
+      width: '100%',
+  },
   container: {
     flex: 1, 
     flexDirection: 'column',
@@ -43,5 +54,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#ccc',
     margin: 6
+  },
+  headerText: {
+    fontSize: 25,
+    fontWeight: '700',
+    top: -50,
+    marginBottom: 20,
+    fontFamily: 'bolt-regular',
+    color: '#b1980cff'
   }
 })
