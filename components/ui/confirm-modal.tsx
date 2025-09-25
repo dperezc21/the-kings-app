@@ -1,5 +1,6 @@
-import { BarberPrice } from "@/constants/service-barber-price";
+import { BarberPrice, BarberServicePrice } from "@/constants/service-barber-price";
 import { justityAlignCenter, textButton } from "@/constants/styles";
+import BarberPriceController from "@/hooks/barber-price.controller";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -8,6 +9,8 @@ interface ConfirmModalProps {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
 }
+
+const barberPriceController = new BarberPriceController();
 
 export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, }: ConfirmModalProps) {
 
@@ -26,7 +29,7 @@ export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisi
                     style={stylesModal.button}  >
                 <Text style={textButton.style}>Cancelar</Text>
             </Pressable>
-            <Pressable onPress={() => { setModalVisible(false); }} 
+            <Pressable onPress={() => { setModalVisible(false); barberPriceController.setServicePrice(serviceSeleted as BarberServicePrice); }} 
                     style={{...stylesModal.button, ...stylesModal.buttonAccept}}  >
                 <Text style={textButton.style}>Aceptar</Text>
             </Pressable>

@@ -9,3 +9,7 @@ export const buttons_value: BarberPrice[] = [
   {service: 'Afeitado', price: 1000},
   {service: 'Cejas', price: 2000}
 ];
+
+export interface BarberServicePrice extends BarberPrice {
+  date: Date
+}
