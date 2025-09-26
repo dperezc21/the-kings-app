@@ -1,13 +1,21 @@
 import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberPrice, BarberServicePrice, buttons_value } from '@/constants/service-barber-price';
 import { textButton } from '@/constants/styles';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 export default function HomeScreen() {
   const [serviceSeleted, setServiceSelected] = React.useState<BarberServicePrice | null>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [serviceSaved, setServiceSaved] = React.useState(false);
+
+  useEffect(() => {
+    if(serviceSaved) {
+      setServiceSelected(null);
+      setServiceSaved(false);
+    }
+  }, [serviceSaved]);
 
   return (
     <View style={styles.container}>
@@ -21,7 +29,11 @@ export default function HomeScreen() {
         </Pressable>
       ))} 
       </View>   
-      <ConfirmModal serviceSeleted={serviceSeleted} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+      <ConfirmModal 
+        serviceSeleted={serviceSeleted} 
+        modalVisible={modalVisible} 
+        setModalVisible={setModalVisible} 
+        saved={setServiceSaved} />
       
       { serviceSeleted?.price &&
         <view style={styles.payMethodContainer}>

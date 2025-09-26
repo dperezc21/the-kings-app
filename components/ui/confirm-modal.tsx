@@ -6,13 +6,14 @@ import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 interface ConfirmModalProps {
   serviceSeleted: BarberPrice | null;
+  saved: (dataSaved: boolean) => void;
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
 }
 
 const barberPriceController = new BarberPriceController();
 
-export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, }: ConfirmModalProps) {
+export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, saved }: ConfirmModalProps) {
 
   return (
     <Modal 
@@ -25,11 +26,13 @@ export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisi
             <View style={stylesModal.modalView}>
             <Text style={stylesModal.modalText}>Servicio: {serviceSeleted?.service}, Precio: {serviceSeleted?.price}</Text>
             <View style={stylesModal.containerButtons}>
-            <Pressable onPress={() => { setModalVisible(false); }} 
+            <Pressable onPress={() => { setModalVisible(false); saved(false) }} 
                     style={stylesModal.button}  >
                 <Text style={textButton.style}>Cancelar</Text>
             </Pressable>
-            <Pressable onPress={() => { setModalVisible(false); barberPriceController.setServicePrice(serviceSeleted as BarberServicePrice); }} 
+            <Pressable onPress={() => { setModalVisible(false); 
+                                        barberPriceController.setServicePrice(serviceSeleted as BarberServicePrice);
+                                        saved(true) }} 
                     style={{...stylesModal.button, ...stylesModal.buttonAccept}}  >
                 <Text style={textButton.style}>Aceptar</Text>
             </Pressable>
