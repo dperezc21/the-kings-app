@@ -1,26 +1,44 @@
 import ConfirmModal from '@/components/ui/confirm-modal';
-import { BarberPrice, buttons_value } from '@/constants/service-barber-price';
+import { BarberPrice, BarberServicePrice, buttons_value } from '@/constants/service-barber-price';
 import { textButton } from '@/constants/styles';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 export default function HomeScreen() {
-  const [serviceSeleted, setServiceSelected] = React.useState<BarberPrice | null>(null);
+  const [serviceSeleted, setServiceSelected] = React.useState<BarberServicePrice | null>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>The kings Barber</Text>
       <View style={styles.containerButtons}>
       {buttons_value.map((value: BarberPrice) => (
-        <Pressable onPress={() => { setServiceSelected(value); setModalVisible(true); }} 
-                  key={value.service} style={styles.button_select}  
+        <Pressable onPress={() => { setServiceSelected(value as BarberServicePrice) }} 
+                  key={value.service} style={{...styles.button_select, backgroundColor: serviceSeleted?.service === value.service ? '#b1980cff' : '#fff'}}  
                   android_ripple={{color: '#ccc'}}>
-            <Text style={textButton.style}>{ value.service }</Text>
+            <Text style={{...textButton.style, fontWeight: serviceSeleted?.service === value.service ? '700': '400'}}>{ value.service }</Text>
         </Pressable>
       ))} 
       </View>   
       <ConfirmModal serviceSeleted={serviceSeleted} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+      
+      { serviceSeleted?.price &&
+        <view style={styles.payMethodContainer}>
+        <TouchableOpacity onPress={() => {setServiceSelected({...serviceSeleted, payMethod: 'efectivo'}); setModalVisible(true) }} 
+            style={{ ...styles.payMethodButton, borderColor: serviceSeleted.payMethod === 'efectivo' ? 'blue' : 'transparent' }}>
+          <Image source={require('../../assets/images/pago.png')} style={styles.widthHeight} />
+          <Text>Efectivo</Text>
+        </TouchableOpacity> 
+
+          <TouchableOpacity onPress={() => {setServiceSelected({...serviceSeleted, payMethod: 'nequi'}); setModalVisible(true) }} 
+             style={{ ...styles.payMethodButton, borderColor: serviceSeleted.payMethod === 'nequi' ? 'blue' : 'transparent' }}>
+            <Image source={require('../../assets/images/pago-movil.png')} style={styles.widthHeight} />
+          <Text>Nequi</Text>
+          </TouchableOpacity> 
+        </view> 
+      }
+     
     </View>
   );
 }
@@ -33,8 +51,8 @@ const styles = StyleSheet.create({
       flexWrap: 'wrap',
       justifyContent: 'center',
       gap: 10,
-      padding: 10,
-      width: '100%',
+      padding: 5,
+      width: '100%'
   },
   container: {
     flex: 1, 
@@ -62,5 +80,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontFamily: 'bolt-regular',
     color: '#b1980cff'
-  }
+  },
+  payMethodContainer: { 
+    display: 'flex', 
+    justifyContent: 'center', 
+    flexDirection: 'row', 
+    height: 40, 
+    width: '50%', 
+    marginTop: 20,
+    gap: 20,
+    position: 'absolute',
+    bottom: 80
+  },
+  payMethodButton: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    marginTop: 10,
+    borderWidth: 1, 
+    borderRadius: 5, 
+    padding: 4
+  },
+  widthHeight: { width: 30, height: 30 }
 })

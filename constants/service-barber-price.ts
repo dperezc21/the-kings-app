@@ -11,5 +11,6 @@ export const buttons_value: BarberPrice[] = [
 ];
 
 export interface BarberServicePrice extends BarberPrice {
-  date: Date
+  date: Date,
+  payMethod?: string,
 }
