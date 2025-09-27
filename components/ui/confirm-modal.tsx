@@ -34,7 +34,7 @@ export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisi
                                         barberPriceController.setServicePrice(serviceSeleted as BarberServicePrice);
                                         saved(true) }} 
                     style={{...stylesModal.button, ...stylesModal.buttonAccept}}  >
-                <Text style={textButton.style}>Aceptar</Text>
+                <Text style={{...textButton.style, ...stylesModal.textButtonAccept}}>Aceptar</Text>
             </Pressable>
             </View>
             </View>
@@ -78,6 +78,11 @@ export const stylesModal = StyleSheet.create({
     backgroundColor: '#bcc3c9ff',
   },
   buttonAccept: { 
-    backgroundColor: '#2196F3',
+    backgroundColor: '#5E5A80',
+  },
+  textButtonAccept: { 
+    color: '#000',
+    fontWeight: '800',
+    fontSize: 16,
   }
 });

@@ -17,15 +17,23 @@ export default function HomeScreen() {
     }
   }, [serviceSaved]);
 
+  const getBackGroundColorServiceSelected = (currentService: string) => ({
+    backgroundColor: serviceSeleted?.service === currentService ? '#5E5A80' : '#dcdcdfff',
+  });
+
+  const styleTextButtonSelected = (currentService: string) => ({
+    color: serviceSeleted?.service === currentService ? '#fff' : '#000',
+  });
+
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>The kings Barber</Text>
       <View style={styles.containerButtons}>
       {buttons_value.map((value: BarberPrice) => (
         <Pressable onPress={() => { setServiceSelected(value as BarberServicePrice) }} 
-                  key={value.service} style={{...styles.button_select, backgroundColor: serviceSeleted?.service === value.service ? '#b1980cff' : '#fff'}}  
+                  key={value.service} style={{...styles.button_select, ...getBackGroundColorServiceSelected(value.service) }}  
                   android_ripple={{color: '#ccc'}}>
-            <Text style={{...textButton.style, fontWeight: serviceSeleted?.service === value.service ? '700': '400'}}>{ value.service }</Text>
+            <Text style={{...textButton.style, fontWeight: serviceSeleted?.service === value.service ? '700' : '400', ...styleTextButtonSelected(value.service)}}>{ value.service }</Text>
         </Pressable>
       ))} 
       </View>   
@@ -70,7 +78,8 @@ const styles = StyleSheet.create({
     flex: 1, 
     flexDirection: 'column',
     justifyContent: 'center', 
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#F3E8FF'
   },
   button_select: {
     display: 'flex',
