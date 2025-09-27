@@ -1,18 +1,36 @@
 import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberPrice, BarberServicePrice, buttons_value } from '@/constants/service-barber-price';
 import { textButton } from '@/constants/styles';
+import BarberPriceController from '@/hooks/barber-price.controller';
 import React, { useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-
+const barberPriceController = new BarberPriceController();
 export default function HomeScreen() {
   const [serviceSeleted, setServiceSelected] = React.useState<BarberServicePrice | null>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [serviceSaved, setServiceSaved] = React.useState(false);
+  const [total, setTotal] = React.useState(0);
+  const [, setAllService] = React.useState<BarberServicePrice[]>([]);
+
+  const getAllService = async () => {
+    let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
+    if(services && services?.length) {
+      setAllService(services);
+      services = services.filter(service => new Date(service.date).toDateString() === new Date().toDateString());
+      const totalPrices = services.reduce((acc, service) => acc + service.price, 0);
+      setTotal(totalPrices);
+    }
+  }
+
+  useEffect(() => {
+    getAllService();
+  }, []);
 
   useEffect(() => {
     if(serviceSaved) {
       setServiceSelected(null);
+      setTotal(total + (serviceSeleted?.price || 0));
       setServiceSaved(false);
     }
   }, [serviceSaved]);
@@ -28,6 +46,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>The kings Barber</Text>
+      <Text style={styles.totalText}>Total del dia: {total}</Text>
       <View style={styles.containerButtons}>
       {buttons_value.map((value: BarberPrice) => (
         <Pressable onPress={() => { setServiceSelected(value as BarberServicePrice) }} 
@@ -121,5 +140,12 @@ const styles = StyleSheet.create({
     borderRadius: 5, 
     padding: 4
   },
-  widthHeight: { width: 30, height: 30 }
+  widthHeight: { width: 30, height: 30 },
+  totalText: { 
+    fontSize: 20, 
+    fontWeight: '600', 
+    marginBottom: 20, 
+    fontFamily: 'bolt-regular',
+    color: '#43405cff'
+  }
 })
