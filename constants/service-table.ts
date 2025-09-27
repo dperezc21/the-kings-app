@@ -1,8 +1,11 @@
- 
+import { BarberServicePrice } from "./service-barber-price";
+
 export interface ValueFilterInterface {
   name: string;
   label: string;
 }
+
+export const NUMBER_DAYS_TO_NEXT = Object.freeze(1);
 
 export const spanishFormatedDate = (date: Date) => {
   return date.toLocaleDateString('es-ES', {
@@ -18,13 +21,14 @@ export const filters: ValueFilterInterface[] = [
     { name: 'nequi', label: 'Nequi' }, 
     { name: 'efectivo', label: 'Efectivo' }];
 
-export const handlePrevious = () => {
-    console.log('Flecha ← presionada');
-    // Aquí puedes agregar lógica para paginar o cambiar datos
-};
+export const servicesByDate = (allService: BarberServicePrice[]): Map<string, BarberServicePrice[]> => {
+    const servicesByDateMap: Map<string, BarberServicePrice[]> = new Map();
 
-export const handleNext = () => {
-    console.log('Flecha → presionada');
-    // Aquí también lógica para avanzar
-};
+    allService.forEach(service => {
+        const dateKey = new Date(service.date).toDateString();
+        if (!servicesByDateMap.has(dateKey)) servicesByDateMap.set(dateKey, [service]);
+        else servicesByDateMap.get(dateKey)?.push(service);
+    });
+    return servicesByDateMap;
+}
   

@@ -1,7 +1,8 @@
 import { BarberServicePrice } from '@/constants/service-barber-price';
-import { filters, handleNext, handlePrevious, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
+import { filters, NUMBER_DAYS_TO_NEXT, servicesByDate, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
 import BarberPriceController from '@/hooks/barber-price.controller';
-import React, { useEffect } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const barberPriceController = new BarberPriceController();
@@ -13,13 +14,17 @@ export default function TablaEjemplo() {
   const [dateSelected, setDateSelected] = React.useState<Date>(new Date());
   const [totalValue, setTotalValue] = React.useState<number>(0);
   const [valueFilter, setValueFilter] = React.useState<string>('all');
+  const [servicesByDateMap, setServicesByDateMap] = React.useState<Map<string, BarberServicePrice[]>>(new Map());
+  const [nextServicesLength, setNextServicesLength] = React.useState<boolean>(true);
+  const [previousServicesLength, setPreviousServicesLength] = React.useState<boolean>(true);
+  const [sortedServiceDates, setSortedServiceDates] = React.useState<string[]>([]);
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
     if(services && services?.length) {
+      const servicesByDateMap = servicesByDate(services);
+      setServicesByDateMap(servicesByDateMap);
       setAllService(services);
-      services = services.filter(service => new Date(service.date).toDateString() === dateSelected.toDateString());
-      setServicesFiltered(services);
     }
   }
 
@@ -27,18 +32,62 @@ export default function TablaEjemplo() {
     return allService.filter(service => new Date(service.date).toDateString() === date.toDateString());
   }
 
-  useEffect(() => {
-    setDateSelected(new Date());
-    getAllService();
-  }, []);
+  const handlePrevious = () => {
+      const newDate = new Date(dateSelected);
+      newDate.setDate(newDate.getDate() - NUMBER_DAYS_TO_NEXT);
+      setDateSelected(newDate);
+      setServicesFilteredAndTotalValue(newDate);   
+  };
+  
+  const handleNext = () => {
+    const newDate = new Date(dateSelected);
+    newDate.setDate(newDate.getDate() + NUMBER_DAYS_TO_NEXT);
+    setDateSelected(newDate);
+    setServicesFilteredAndTotalValue(newDate);
+  };
+
+  const setServicesFilteredAndTotalValue = (date: Date) => {
+    const servicesFiltered = servicesByDateMap.get(date.toDateString()) as BarberServicePrice[];
+    setServicesFiltered(servicesFiltered || []);
+    setTotalValue(servicesFiltered?.reduce((acc, service) => acc + service.price, 0) || 0);
+    setValueFilter('all');
+  }
+
+  const nextDayValid = () => {
+    const nextDay = new Date(dateSelected);
+    nextDay.setDate(nextDay.getDate() + NUMBER_DAYS_TO_NEXT);
+    const nextServicesLength = servicesByDateMap.get(nextDay.toDateString())?.length || 0;
+    setNextServicesLength(nextServicesLength > 0 || sortedServiceDates?.includes(nextDay.toDateString()));
+  }
+
+  const previousDayValid = () => {
+    const previousDay = new Date(dateSelected);
+    previousDay.setDate(previousDay.getDate() - NUMBER_DAYS_TO_NEXT);
+    const previousServicesLength = servicesByDateMap.get(previousDay.toDateString())?.length || 0;
+    setPreviousServicesLength(previousServicesLength > 0 || sortedServiceDates?.includes(previousDay.toDateString()));
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      setDateSelected(new Date());
+      getAllService();
+    }, [])
+);
 
   useEffect(() => {
     if(allService && allService?.length) {
-      const services = filterByDate(dateSelected);
+      const services = servicesByDateMap.get(new Date(dateSelected).toDateString()) as BarberServicePrice[];
       setTotalValue(services.reduce((acc, service) => acc + service.price, 0));
       setServicesFiltered(services);
+      const sorted: string[] = Array.from(servicesByDateMap.keys());
+      setSortedServiceDates(sorted);
     }
-  }, [allService]);
+  }, [allService, servicesByDateMap]);
+
+  useEffect(() => { 
+    nextDayValid();
+    previousDayValid();
+}, [serviceFiltered, dateSelected]);
 
   useEffect(() => {
     let filteredServices = [];
@@ -53,15 +102,18 @@ export default function TablaEjemplo() {
 
       {/* Contenedor de botones de navegación */}
       <View style={styles.navButtonsContainer}>
-        <TouchableOpacity onPress={handlePrevious} style={styles.navButton}>
+        <TouchableOpacity disabled={!previousServicesLength} 
+        onPress={handlePrevious} style={styles.navButton}>
           <Text style={styles.navButtonText}>←</Text>
         </TouchableOpacity>
 
         <TouchableOpacity disabled >
-          <Text style={{...styles.navButtonText, ...{ fontSize: 14 }}}>{spanishFormatedDate(dateSelected)}</Text>
+          <Text style={{...styles.navButtonText, ...{ fontSize: 14 }}}>
+            {spanishFormatedDate(dateSelected)}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleNext} style={styles.navButton}>
+        <TouchableOpacity disabled={!nextServicesLength}
+         onPress={handleNext} style={styles.navButton}>
           <Text style={styles.navButtonText}>→</Text>
         </TouchableOpacity>
       </View>
@@ -93,6 +145,9 @@ export default function TablaEjemplo() {
 
       {/* Scrollable table content */}
       <ScrollView style={styles.scrollContainer}>
+        {serviceFiltered.length === 0 && (
+          <Text style={{ textAlign: 'center', marginTop: 20 }}>No hay servicios para esta fecha.</Text>
+        )}
         {serviceFiltered.map((item: BarberServicePrice) => (
           <View key={Math.random()} style={styles.row}>
             <Text style={styles.cell}>{item.service}</Text>
