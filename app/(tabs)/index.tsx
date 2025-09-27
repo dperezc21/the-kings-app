@@ -52,6 +52,7 @@ export default function HomeScreen() {
         <Pressable onPress={() => { setServiceSelected(value as BarberServicePrice) }} 
                   key={value.service} style={{...styles.button_select, ...getBackGroundColorServiceSelected(value.service) }}  
                   android_ripple={{color: '#ccc'}}>
+            <Image source={value?.image} />
             <Text style={{...textButton.style, fontWeight: serviceSeleted?.service === value.service ? '700' : '400', ...styleTextButtonSelected(value.service)}}>{ value.service }</Text>
         </Pressable>
       ))} 
@@ -111,7 +112,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#ccc',
-    margin: 6
+    margin: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    
   },
   headerText: {
     fontSize: 25,
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     gap: 20,
     position: 'absolute',
-    bottom: 80
+    bottom: 60
   },
   payMethodButton: {
     display: 'flex', 
