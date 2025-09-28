@@ -237,6 +237,8 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
+    display: 'flex',
+    alignItems: 'center'
   },
   footer: {
     padding: 10,

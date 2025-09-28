@@ -37,7 +37,6 @@ export default function HomeScreen() {
 
   useEffect(() => {
     getAllService();
-    console.log(allService.length);
     if(allService.length) removeServices();
   }, []);
 
@@ -59,7 +58,8 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>The kings Barber</Text>
+      <Text style={styles.headerText}>The last kings</Text>
+      <Text style={{...styles.headerText, fontSize: 17}}>BARBER SHOP</Text>
       <Text style={styles.totalText}>Total del dia: {total}</Text>
       <View style={styles.containerButtons}>
       {buttons_value.map((value: BarberPrice) => (
@@ -77,8 +77,8 @@ export default function HomeScreen() {
         setModalVisible={setModalVisible} 
         saved={setServiceSaved} />
       
-      { serviceSeleted?.price &&
-        <view style={styles.payMethodContainer}>
+      { serviceSeleted?.service &&
+        <View style={styles.payMethodContainer}>
         <TouchableOpacity onPress={() => {setServiceSelected({...serviceSeleted, payMethod: 'efectivo'}); setModalVisible(true) }} 
             style={{ ...styles.payMethodButton, borderColor: serviceSeleted.payMethod === 'efectivo' ? 'blue' : 'transparent' }}>
           <Image source={require('../../assets/images/pago.png')} style={styles.widthHeight} />
@@ -90,7 +90,7 @@ export default function HomeScreen() {
             <Image source={require('../../assets/images/pago-movil.png')} style={styles.widthHeight} />
           <Text>Nequi</Text>
           </TouchableOpacity> 
-        </view> 
+        </View> 
       }
      
     </View>
@@ -122,11 +122,11 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     width: 100,
     textAlign: 'center',
-    padding: 12,
+    padding: 9,
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#ccc',
-    margin: 6,
+    margin: 1,
     justifyContent: 'center',
     alignItems: 'center',
     
@@ -134,9 +134,9 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 25,
     fontWeight: '700',
-    top: -60,
+    top: -35,
     marginBottom: 2,
-    fontFamily: 'bolt-regular',
+    fontFamily: 'PlayfairDisplay-Bold',
     color: '#b1980cff'
   },
   payMethodContainer: { 
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     gap: 20,
     position: 'absolute',
-    bottom: 47
+    bottom: 35
   },
   payMethodButton: {
     display: 'flex', 
