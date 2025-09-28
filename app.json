@@ -4,7 +4,7 @@
     "slug": "the-kings-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/react-logo.png",
+    "icon": "./assets/images/logo.jpeg",
     "scheme": "thekingsapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -21,7 +21,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "splash": {
-        "image": "./assets/images/react-logo.png",
+        "image": "./assets/images/logo.jpeg",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       }

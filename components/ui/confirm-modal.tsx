@@ -75,10 +75,10 @@ export const stylesModal = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: '#bcc3c9ff',
+    backgroundColor: '#cccfd1ff',
   },
   buttonAccept: { 
-    backgroundColor: '#5E5A80',
+    backgroundColor: '#706c99ff',
   },
   textButtonAccept: { 
     color: '#000',
