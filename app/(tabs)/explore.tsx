@@ -7,7 +7,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 
 const barberPriceController = new BarberPriceController();
 
-export default function TablaEjemplo() {
+export default function Explore() {
 
   const [allService, setAllService] = React.useState<BarberServicePrice[]>([]);
   const [serviceFiltered, setServicesFiltered] = React.useState<BarberServicePrice[]>([]);
@@ -77,9 +77,11 @@ export default function TablaEjemplo() {
   useEffect(() => {
     if(allService && allService?.length) {
       const services = servicesByDateMap.get(new Date(dateSelected).toDateString()) as BarberServicePrice[];
-      setTotalValue(services.reduce((acc, service) => acc + service.price, 0));
+      setTotalValue(services?.reduce((acc, service) => acc + service.price, 0));
       setServicesFiltered(services);
       const sorted: string[] = Array.from(servicesByDateMap.keys());
+      const existsCurrentDate = sorted?.some(date => new Date(date).toDateString() === new Date().toDateString())
+      if(!existsCurrentDate) sorted.unshift(new Date().toDateString());
       setSortedServiceDates(sorted);
     }
   }, [allService, servicesByDateMap]);
@@ -145,10 +147,10 @@ export default function TablaEjemplo() {
 
       {/* Scrollable table content */}
       <ScrollView style={styles.scrollContainer}>
-        {serviceFiltered.length === 0 && (
+        {serviceFiltered?.length === 0 && (
           <Text style={{ textAlign: 'center', marginTop: 20 }}>No hay servicios para esta fecha.</Text>
         )}
-        {serviceFiltered.map((item: BarberServicePrice) => (
+        {serviceFiltered?.map((item: BarberServicePrice) => (
           <View key={Math.random()} style={styles.row}>
             <Text style={styles.cell}>{item.service}</Text>
             <Text style={styles.cell}>{item.price}</Text>
@@ -159,7 +161,8 @@ export default function TablaEjemplo() {
 
       {/* Footer fijo */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Total{valueFilter !== 'all' ? ' '+valueFilter: ''}:  {totalValue}</Text>
+        <Text style={styles.footerText}>Atendidos: {serviceFiltered?.length | 0}</Text>
+        <Text style={styles.footerText}>Total{valueFilter !== 'all' ? ' '+valueFilter: ''}:  ${totalValue}</Text>
       </View>
     </View>
   );
@@ -238,6 +241,10 @@ const styles = StyleSheet.create({
   footer: {
     padding: 10,
     backgroundColor: '#d6e6f7ff',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   footerText: {
     textAlign: 'center',
