@@ -4,7 +4,7 @@
     "slug": "the-kings-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.jpeg",
+    "icon": "./assets/images/logo.png",
     "scheme": "thekingsapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -21,10 +21,11 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "splash": {
-        "image": "./assets/images/logo.jpeg",
+        "image": "./assets/images/logo.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.dperezc21.thekingsapp"
     },
     "web": {
       "output": "static",
@@ -35,7 +36,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/logo.jpeg",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -48,6 +49,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "cab32238-4ae1-4362-a1e0-1a9279d432d5"
+      }
+    },
+    "owner": "dperezc21"
   }
 }
