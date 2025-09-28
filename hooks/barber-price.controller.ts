@@ -3,6 +3,10 @@ import { getData, saveData } from "./barber-service-prices";
 
 export default class BarberPriceController {
 
+    async saveAllServices(services: BarberServicePrice[]) {
+      await saveData('prices', services);
+    }
+
     async setServicePrice(servicePrice: BarberServicePrice) {
         servicePrice.date = new Date();
         const prices = await this.getServicePrices() || [];

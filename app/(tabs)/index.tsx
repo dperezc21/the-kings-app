@@ -1,5 +1,6 @@
 import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberPrice, BarberServicePrice, buttons_value } from '@/constants/service-barber-price';
+import { servicesByDate } from '@/constants/service-table';
 import { textButton } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
 import React, { useEffect } from 'react';
@@ -11,7 +12,7 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [serviceSaved, setServiceSaved] = React.useState(false);
   const [total, setTotal] = React.useState(0);
-  const [, setAllService] = React.useState<BarberServicePrice[]>([]);
+  const [allService, setAllService] = React.useState<BarberServicePrice[]>([]);
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
@@ -23,8 +24,21 @@ export default function HomeScreen() {
     }
   }
 
+  const removeServices = async() => {  
+    const DAYS_NUMBER_TO_KEEP = 7;
+    const serviceByDateMap: Map<string, BarberServicePrice[]>  = servicesByDate(allService);
+    const dateList: MapIterator<string> = serviceByDateMap.keys();
+    if(Array.from(dateList).length > DAYS_NUMBER_TO_KEEP) {
+      let sortedDates = Array.from(serviceByDateMap.keys()).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+      const servicesToKeep = sortedDates.slice(0, DAYS_NUMBER_TO_KEEP).flatMap(date => serviceByDateMap.get(date) || []);    
+      await barberPriceController.saveAllServices(servicesToKeep);
+    }
+  }
+
   useEffect(() => {
     getAllService();
+    console.log(allService.length);
+    if(allService.length) removeServices();
   }, []);
 
   useEffect(() => {
@@ -108,7 +122,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     width: 100,
     textAlign: 'center',
-    padding: 17,
+    padding: 12,
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#ccc',
@@ -120,8 +134,8 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 25,
     fontWeight: '700',
-    top: -50,
-    marginBottom: 20,
+    top: -60,
+    marginBottom: 2,
     fontFamily: 'bolt-regular',
     color: '#b1980cff'
   },
@@ -134,7 +148,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     gap: 20,
     position: 'absolute',
-    bottom: 60
+    bottom: 47
   },
   payMethodButton: {
     display: 'flex', 
@@ -148,7 +162,7 @@ const styles = StyleSheet.create({
   totalText: { 
     fontSize: 20, 
     fontWeight: '600', 
-    marginBottom: 20, 
+    marginBottom: 10, 
     fontFamily: 'bolt-regular',
     color: '#43405cff'
   }
