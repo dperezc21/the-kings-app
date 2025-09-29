@@ -4,6 +4,7 @@ import React from 'react';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { StatusBar } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -11,9 +12,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tabIconSelected,
         headerShown: false
       }}>
+      <StatusBar hidden={true} />
       <Tabs.Screen
         name="index"
         options={{
