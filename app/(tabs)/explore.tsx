@@ -1,9 +1,10 @@
 import { BarberServicePrice } from '@/constants/service-barber-price';
 import { filters, NUMBER_DAYS_TO_NEXT, servicesByDate, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
+import { backGroundColorItemSelected } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const barberPriceController = new BarberPriceController();
 
@@ -18,6 +19,7 @@ export default function Explore() {
   const [nextServicesLength, setNextServicesLength] = React.useState<boolean>(true);
   const [previousServicesLength, setPreviousServicesLength] = React.useState<boolean>(true);
   const [sortedServiceDates, setSortedServiceDates] = React.useState<string[]>([]);
+  const [itemSelected, setItemSelected] = React.useState<BarberServicePrice | null>(null);
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
@@ -151,11 +153,13 @@ export default function Explore() {
           <Text style={{ textAlign: 'center', marginTop: 20 }}>No hay servicios para esta fecha.</Text>
         )}
         {serviceFiltered?.map((item: BarberServicePrice) => (
-          <View key={Math.random()} style={styles.row}>
-            <Text style={styles.cell}>{item.service}</Text>
+          <Pressable onPressOut={() => setItemSelected(null)} 
+          onPressIn={() => setItemSelected(item)} key={item.service} 
+          style={{...styles.row, ...backGroundColorItemSelected(itemSelected?.service as string, item.service, '#cbd4e0ff', '')}}>
+            <Text style={{...styles.cell, fontWeight: '600'}}>{item.service}</Text>
             <Text style={styles.cell}>{item.price}</Text>
             <Text style={styles.cell}>{item.payMethod}</Text>
-          </View>
+          </Pressable>
         ))}
       </ScrollView>
 
@@ -239,7 +243,9 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingRight: 5,
+    fontFamily: 'bolt-regular',
   },
   footer: {
     padding: 10,

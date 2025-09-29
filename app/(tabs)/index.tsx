@@ -1,7 +1,7 @@
 import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberPrice, BarberServicePrice, buttons_value } from '@/constants/service-barber-price';
 import { servicesByDate } from '@/constants/service-table';
-import { textButton } from '@/constants/styles';
+import { backGroundColorItemSelected, textButton } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
 import React, { useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -48,10 +48,6 @@ export default function HomeScreen() {
     }
   }, [serviceSaved]);
 
-  const getBackGroundColorServiceSelected = (currentService: string) => ({
-    backgroundColor: serviceSeleted?.service === currentService ? '#5E5A80' : '#dcdcdfff',
-  });
-
   const styleTextButtonSelected = (currentService: string) => ({
     color: serviceSeleted?.service === currentService ? '#fff' : '#000',
   });
@@ -64,7 +60,8 @@ export default function HomeScreen() {
       <View style={styles.containerButtons}>
       {buttons_value.map((value: BarberPrice) => (
         <Pressable onPress={() => { setServiceSelected(value as BarberServicePrice) }} 
-                  key={value.service} style={{...styles.button_select, ...getBackGroundColorServiceSelected(value.service) }}  
+                  key={value.service} style={{...styles.button_select, 
+                                              ...backGroundColorItemSelected(serviceSeleted?.service as string, value.service) }}  
                   android_ripple={{color: '#ccc'}}>
             <Image source={value?.image} />
             <Text style={{...textButton.style, fontWeight: serviceSeleted?.service === value.service ? '700' : '400', ...styleTextButtonSelected(value.service)}}>{ value.service }</Text>
