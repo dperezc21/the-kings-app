@@ -1,19 +1,16 @@
-import { BarberPrice, BarberServicePrice } from "@/constants/service-barber-price";
+import { BarberServicePrice } from "@/constants/service-barber-price";
 import { justityAlignCenter, textButton } from "@/constants/styles";
-import BarberPriceController from "@/hooks/barber-price.controller";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
-interface ConfirmModalProps {
-  serviceSeleted: BarberPrice | null;
-  saved: (dataSaved: boolean) => void;
+interface ConfirmModalProps<T> {
+  serviceSeleted: T | null;
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
+  sendRequest: (boolean: boolean) => void;
 }
 
-const barberPriceController = new BarberPriceController();
-
-export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, saved }: ConfirmModalProps) {
+export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, sendRequest }: ConfirmModalProps<BarberServicePrice>) {
 
   return (
     <Modal 
@@ -27,13 +24,11 @@ export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisi
             <Text style={stylesModal.modalText}> <strong>Servicio:</strong> {serviceSeleted?.service}</Text>
             <Text style={{...stylesModal.modalText, marginBottom: 10}}> <strong>Precio:</strong> {serviceSeleted?.price}</Text>
             <View style={stylesModal.containerButtons}>
-            <Pressable onPress={() => { setModalVisible(false); saved(false) }} 
+            <Pressable onPress={() => { setModalVisible(false); sendRequest(false)}} 
                     style={stylesModal.button}  >
                 <Text style={textButton.style}>Cancelar</Text>
             </Pressable>
-            <Pressable onPress={() => { setModalVisible(false); 
-                                        barberPriceController.setServicePrice(serviceSeleted as BarberServicePrice);
-                                        saved(true) }} 
+            <Pressable onPress={() => { setModalVisible(false); sendRequest(true)}} 
                     style={{...stylesModal.button, ...stylesModal.buttonAccept}}  >
                 <Text style={{...textButton.style, ...stylesModal.textButtonAccept}}>Aceptar</Text>
             </Pressable>

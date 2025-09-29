@@ -10,7 +10,7 @@ const barberPriceController = new BarberPriceController();
 export default function HomeScreen() {
   const [serviceSeleted, setServiceSelected] = React.useState<BarberServicePrice | null>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [serviceSaved, setServiceSaved] = React.useState(false);
+  const [saveService, setServiceToSave] = React.useState(false);
   const [total, setTotal] = React.useState(0);
   const [allService, setAllService] = React.useState<BarberServicePrice[]>([]);
 
@@ -41,12 +41,15 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    if(serviceSaved) {
-      setServiceSelected(null);
-      setTotal(total + (serviceSeleted?.price || 0));
-      setServiceSaved(false);
+    if(saveService) {
+      barberPriceController.setServicePrice(serviceSeleted as BarberServicePrice)
+        .then(() => {
+          setServiceSelected(null);
+          setTotal(total + (serviceSeleted?.price || 0));
+          setServiceToSave(false);
+        })
     }
-  }, [serviceSaved]);
+  }, [saveService]);
 
   const styleTextButtonSelected = (currentService: string) => ({
     color: serviceSeleted?.service === currentService ? '#fff' : '#000',
@@ -72,7 +75,7 @@ export default function HomeScreen() {
         serviceSeleted={serviceSeleted} 
         modalVisible={modalVisible} 
         setModalVisible={setModalVisible} 
-        saved={setServiceSaved} />
+        sendRequest={setServiceToSave} />
       
       { serviceSeleted?.service &&
         <View style={styles.payMethodContainer}>
