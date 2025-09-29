@@ -24,7 +24,8 @@ export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisi
     >
         <View style={stylesModal.centeredView}>
             <View style={stylesModal.modalView}>
-            <Text style={stylesModal.modalText}>Servicio: {serviceSeleted?.service}, Precio: {serviceSeleted?.price}</Text>
+            <Text style={stylesModal.modalText}> <strong>Servicio:</strong> {serviceSeleted?.service}</Text>
+            <Text style={{...stylesModal.modalText, marginBottom: 10}}> <strong>Precio:</strong> {serviceSeleted?.price}</Text>
             <View style={stylesModal.containerButtons}>
             <Pressable onPress={() => { setModalVisible(false); saved(false) }} 
                     style={stylesModal.button}  >
@@ -60,7 +61,7 @@ export const stylesModal = StyleSheet.create({
     elevation: 5, // Android shadow
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 1,
     textAlign: 'center',
   },
   containerButtons: {

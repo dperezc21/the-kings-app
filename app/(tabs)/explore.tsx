@@ -77,7 +77,7 @@ export default function Explore() {
   useEffect(() => {
     if(allService && allService?.length) {
       const services = servicesByDateMap.get(new Date(dateSelected).toDateString()) as BarberServicePrice[];
-      setTotalValue(services?.reduce((acc, service) => acc + service.price, 0));
+      setTotalValue(services?.length ? services?.reduce((acc, service) => acc + service.price, 0): 0);
       setServicesFiltered(services);
       const sorted: string[] = Array.from(servicesByDateMap.keys());
       const existsCurrentDate = sorted?.some(date => new Date(date).toDateString() === new Date().toDateString())
@@ -147,7 +147,7 @@ export default function Explore() {
 
       {/* Scrollable table content */}
       <ScrollView style={styles.scrollContainer}>
-        {serviceFiltered?.length === 0 && (
+        {!serviceFiltered?.length && (
           <Text style={{ textAlign: 'center', marginTop: 20 }}>No hay servicios para esta fecha.</Text>
         )}
         {serviceFiltered?.map((item: BarberServicePrice) => (
@@ -177,11 +177,12 @@ const styles = StyleSheet.create({
   navButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    padding: 9,
     backgroundColor: '#F5F5F5',
+    marginTop: 10
   },
   navButton: {
-    backgroundColor: '#d6e6f7ff',
+    backgroundColor: '#c0d8f1ff',
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 5,

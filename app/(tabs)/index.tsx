@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center', 
     alignItems: 'center',
-    backgroundColor: '#F3E8FF'
   },
   button_select: {
     display: 'flex',
