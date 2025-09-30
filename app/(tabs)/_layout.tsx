@@ -4,6 +4,7 @@ import React from 'react';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'react-native';
 
 export default function TabLayout() {
@@ -26,8 +27,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Explorar',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="list-outline" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="setting"
+        options={{
+          title: 'Configuración',
+          tabBarIcon: ({ color, size }) => (
+        <Ionicons name="settings-outline" size={size} color={color} />),
         }}
       />
     </Tabs>
