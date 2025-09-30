@@ -1,9 +1,11 @@
+import { TextSaveConfirmModal } from '@/components/text-save-confirm-modal';
 import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberPrice, BarberServicePrice, buttons_value } from '@/constants/service-barber-price';
 import { servicesByDate } from '@/constants/service-table';
 import { backGroundColorItemSelected, textButton } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
-import React, { useEffect } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const barberPriceController = new BarberPriceController();
@@ -35,14 +37,15 @@ export default function HomeScreen() {
     }
   }
 
-  useEffect(() => {
-    getAllService();
-    if(allService.length) removeServices();
-  }, []);
+  useFocusEffect(
+      useCallback(() => {
+        getAllService();
+        if(allService.length) removeServices();
+      }, []));
 
   useEffect(() => {
     if(saveService) {
-      barberPriceController.setServicePrice(serviceSeleted as BarberServicePrice)
+      barberPriceController.saveNewService(serviceSeleted as BarberServicePrice)
         .then(() => {
           setServiceSelected(null);
           setTotal(total + (serviceSeleted?.price || 0));
@@ -75,7 +78,9 @@ export default function HomeScreen() {
         serviceSeleted={serviceSeleted} 
         modalVisible={modalVisible} 
         setModalVisible={setModalVisible} 
-        sendRequest={setServiceToSave} />
+        sendRequest={setServiceToSave} 
+        component={ <TextSaveConfirmModal serviceSelected={serviceSeleted} /> }
+        />
       
       { serviceSeleted?.service &&
         <View style={styles.payMethodContainer}>
