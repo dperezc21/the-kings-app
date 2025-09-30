@@ -8,9 +8,10 @@ interface ConfirmModalProps<T> {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
   sendRequest: (boolean: boolean) => void;
+  component?: React.ReactNode;
 }
 
-export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, sendRequest }: ConfirmModalProps<BarberServicePrice>) {
+export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, sendRequest, component }: ConfirmModalProps<BarberServicePrice>) {
 
   return (
     <Modal 
@@ -21,14 +22,13 @@ export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisi
     >
         <View style={stylesModal.centeredView}>
             <View style={stylesModal.modalView}>
-            <Text style={stylesModal.modalText}> <strong>Servicio:</strong> {serviceSeleted?.service}</Text>
-            <Text style={{...stylesModal.modalText, marginBottom: 10}}> <strong>Precio:</strong> {serviceSeleted?.price}</Text>
+              {component ? component : null}
             <View style={stylesModal.containerButtons}>
             <Pressable onPress={() => { setModalVisible(false); sendRequest(false)}} 
                     style={stylesModal.button}  >
                 <Text style={textButton.style}>Cancelar</Text>
             </Pressable>
-            <Pressable onPress={() => { setModalVisible(false); sendRequest(true)}} 
+            <Pressable onPress={() => { setModalVisible(false); sendRequest(true); console.log('Servicio guardado') }} 
                     style={{...stylesModal.button, ...stylesModal.buttonAccept}}  >
                 <Text style={{...textButton.style, ...stylesModal.textButtonAccept}}>Aceptar</Text>
             </Pressable>

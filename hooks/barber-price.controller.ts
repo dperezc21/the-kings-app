@@ -7,9 +7,10 @@ export default class BarberPriceController {
       await saveData('prices', services);
     }
 
-    async setServicePrice(servicePrice: BarberServicePrice) {
+    async saveNewService(servicePrice: BarberServicePrice) {
         servicePrice.date = new Date();
         const prices = await this.getServicePrices() || [];
+        servicePrice.id = prices.length ? Math.max(...prices.map(p => p.id)) + 1 : 1;
         if(prices.length === 0){
             await saveData('prices', [servicePrice]);
             return;
@@ -20,6 +21,12 @@ export default class BarberPriceController {
 
     getServicePrices(): Promise<BarberServicePrice[] | null> {
         return getData('prices');
+    }
+
+    async deleteServicePrice(servicePrice: BarberServicePrice) {
+        const services: BarberServicePrice[] | null = await this.getServicePrices();
+        const servicesFiltered: BarberServicePrice[] = services?.filter(value => value.service !== servicePrice.service) as BarberServicePrice[];
+        await this.saveAllServices(servicesFiltered);
     }
 
 }

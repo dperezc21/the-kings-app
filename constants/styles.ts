@@ -21,6 +21,6 @@ export const textButton = StyleSheet.create({
 
 })
 
-export const backGroundColorItemSelected = (valueSelected: string, currentItem: string, colorSelected: string = '#5E5A80', colorDefault: string = '#dcdcdfff') => ({
+export const backGroundColorItemSelected = (valueSelected: string | number, currentItem: string | number, colorSelected: string = '#5E5A80', colorDefault: string = '#dcdcdfff') => ({
     backgroundColor: valueSelected === currentItem ? colorSelected : colorDefault,
   });

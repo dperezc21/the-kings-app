@@ -14,6 +14,7 @@ export const buttons_value: BarberPrice[] = [
 ];
 
 export type BarberServicePrice = Omit<BarberPrice, 'image'> & {
+  id: number,
   date: Date,
   payMethod?: string,
 }

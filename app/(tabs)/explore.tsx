@@ -1,3 +1,5 @@
+import { TextDeleteConfirmModel } from '@/components/text-delete-confirm-model';
+import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberServicePrice } from '@/constants/service-barber-price';
 import { filters, NUMBER_DAYS_TO_NEXT, servicesByDate, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
 import { backGroundColorItemSelected } from '@/constants/styles';
@@ -7,7 +9,7 @@ import React, { useCallback, useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const barberPriceController = new BarberPriceController();
-
+      
 export default function Explore() {
 
   const [allService, setAllService] = React.useState<BarberServicePrice[]>([]);
@@ -20,6 +22,8 @@ export default function Explore() {
   const [previousServicesLength, setPreviousServicesLength] = React.useState<boolean>(true);
   const [sortedServiceDates, setSortedServiceDates] = React.useState<string[]>([]);
   const [itemSelected, setItemSelected] = React.useState<BarberServicePrice | null>(null);
+  const [deleteService, setDeleteService] = React.useState(false);
+  const [modelVisible, setModalVisible] = React.useState(false);
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
@@ -73,8 +77,19 @@ export default function Explore() {
     useCallback(() => {
       setDateSelected(new Date());
       getAllService();
-    }, [])
-);
+      setItemSelected(null);
+    }, []));
+
+    useEffect(() => { 
+      if(deleteService && itemSelected?.id) {
+        barberPriceController.deleteServicePrice(itemSelected)
+          .then(() => {
+            setItemSelected(null);
+            setDeleteService(false);
+            getAllService();
+          })
+      }
+    }, [deleteService]);
 
   useEffect(() => {
     if(allService && allService?.length) {
@@ -153,15 +168,22 @@ export default function Explore() {
           <Text style={{ textAlign: 'center', marginTop: 20 }}>No hay servicios para esta fecha.</Text>
         )}
         {serviceFiltered?.map((item: BarberServicePrice) => (
-          <Pressable onPressOut={() => setItemSelected(null)} 
-          onPressIn={() => setItemSelected(item)} key={item.service} 
-          style={{...styles.row, ...backGroundColorItemSelected(itemSelected?.service as string, item.service, '#cbd4e0ff', '')}}>
+          <Pressable onPressIn={() => {setItemSelected(item); setModalVisible(true)}} key={item.id} 
+          style={{...styles.row, ...backGroundColorItemSelected(itemSelected?.id as number, item.id, '#e5e8ecff', '')}}>
             <Text style={{...styles.cell, fontWeight: '600'}}>{item.service}</Text>
             <Text style={styles.cell}>{item.price}</Text>
             <Text style={styles.cell}>{item.payMethod}</Text>
           </Pressable>
         ))}
       </ScrollView>
+
+      <ConfirmModal
+        serviceSeleted={itemSelected}
+        modalVisible={modelVisible} 
+        setModalVisible={setModalVisible} 
+        sendRequest={setDeleteService} 
+        component={ itemSelected ? <TextDeleteConfirmModel /> : null }
+      ></ConfirmModal>
 
       {/* Footer fijo */}
       <View style={styles.footer}>
