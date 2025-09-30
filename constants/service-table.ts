@@ -16,6 +16,14 @@ export const spanishFormatedDate = (date: Date) => {
   });
 }
 
+export const hourFormatDate = (date: Date) => {
+  return date.toLocaleTimeString('es-ES', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
 export const filters: ValueFilterInterface[] = [
     { name: 'all', label: 'Todos' }, 
     { name: 'nequi', label: 'Nequi' }, 

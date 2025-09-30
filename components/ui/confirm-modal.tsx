@@ -28,7 +28,7 @@ export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisi
                     style={stylesModal.button}  >
                 <Text style={textButton.style}>Cancelar</Text>
             </Pressable>
-            <Pressable onPress={() => { setModalVisible(false); sendRequest(true); console.log('Servicio guardado') }} 
+            <Pressable onPress={() => { setModalVisible(false); sendRequest(true) }} 
                     style={{...stylesModal.button, ...stylesModal.buttonAccept}}  >
                 <Text style={{...textButton.style, ...stylesModal.textButtonAccept}}>Aceptar</Text>
             </Pressable>

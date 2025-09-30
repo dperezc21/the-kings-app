@@ -1,7 +1,7 @@
 import { TextDeleteConfirmModel } from '@/components/text-delete-confirm-model';
 import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberServicePrice } from '@/constants/service-barber-price';
-import { filters, NUMBER_DAYS_TO_NEXT, servicesByDate, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
+import { filters, hourFormatDate, NUMBER_DAYS_TO_NEXT, servicesByDate, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
 import { backGroundColorItemSelected } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
 import { useFocusEffect } from 'expo-router';
@@ -159,7 +159,8 @@ export default function Explore() {
       <View style={styles.header}>
         <Text style={styles.headerText}>Servicio</Text>
         <Text style={styles.headerText}>Precio</Text>
-        <Text style={styles.headerText}>Tipo de Pago</Text>
+        <Text style={styles.headerText}>Pago</Text>
+        <Text style={styles.headerText}>Hora</Text>
       </View>
 
       {/* Scrollable table content */}
@@ -173,6 +174,7 @@ export default function Explore() {
             <Text style={{...styles.cell, fontWeight: '600'}}>{item.service}</Text>
             <Text style={styles.cell}>{item.price}</Text>
             <Text style={styles.cell}>{item.payMethod}</Text>
+            <Text style={styles.cell}>{hourFormatDate(new Date(item.date))}</Text>
           </Pressable>
         ))}
       </ScrollView>
