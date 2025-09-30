@@ -23,7 +23,7 @@
       "splash": {
         "image": "./assets/images/logo.png",
         "resizeMode": "contain",
-        "backgroundColor": "black"
+        "backgroundColor": "#000000"
       },
       "package": "com.dperezc21.thekingsapp"
     },
