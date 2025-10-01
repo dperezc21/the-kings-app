@@ -1,50 +1,46 @@
-# Welcome to your Expo app 👋
+# 💈 BarberApp - React Native (Expo)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+BarberApp is a mobile application built with **React Native** and **Expo**, designed specifically for barbershops to manage daily services and earnings. The app provides a clean, offline-friendly interface that allows barbers to track services performed, calculate daily revenue, and manage service pricing.
 
-## Get started
+---
 
-1. Install dependencies
+## ✂️ Features
 
-   ```bash
-   npm install
-   ```
+- 💇 Services for:
+  - Men
+  - Children
+  - Beard
+  - Eyebrows
+  - Hairlines (Edges)
 
-2. Start the app
+- 💾 Data Storage:
+  - Saves all service and earnings data locally using device storage
+  - Persistent storage even after the app is closed
 
-   ```bash
-   npx expo start
-   ```
+- 📊 Earnings Overview:
+  - Displays total earnings for the current day
+  - Historical data view of previous days’ totals
 
-In the output, you'll find options to open the app in a
+- 📋 Service Table:
+  - Shows a list of services provided each day
+  - View past records to analyze trends and performance
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- 🛠️ Service Management:
+  - Edit pricing for each type of service
+  - Delete daily data
+  - Clear all historical records
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## 🖼️ Screenshots
 
-When you're ready, run:
+Add screenshots here to visually showcase the app’s UI and features.
 
-```bash
-npm run reset-project
-```
+### 🟦 Home Page
+![home](assets/ui/home.png)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 🟨 Historical Data
+![alt text](assets/ui/table.png)
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 🟩 Configurations
+![alt text](assets/ui/config.png)
