@@ -7,6 +7,7 @@ import BarberPriceController from '@/hooks/barber-price.controller';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Snackbar } from 'react-native-paper';
 
 const barberPriceController = new BarberPriceController();
       
@@ -24,6 +25,9 @@ export default function Explore() {
   const [itemSelected, setItemSelected] = React.useState<BarberServicePrice | null>(null);
   const [deleteService, setDeleteService] = React.useState(false);
   const [modelVisible, setModalVisible] = React.useState(false);
+  const [showSnackBar, setShowSnackBar] = React.useState<boolean>(false);
+  const onDismissSnackBar = () => setShowSnackBar(false);
+  const onToggleSnackBar = () => setShowSnackBar(!showSnackBar);
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
@@ -69,6 +73,7 @@ export default function Explore() {
       setDateSelected(new Date());
       getAllService();
       setItemSelected(null);
+      onDismissSnackBar();
     }, []));
 
     useEffect(() => { 
@@ -78,6 +83,7 @@ export default function Explore() {
             setItemSelected(null);
             setDeleteService(false);
             getAllService();
+            onToggleSnackBar();
           })
       }
     }, [deleteService]);
@@ -183,6 +189,13 @@ export default function Explore() {
         <Text style={styles.footerText}>Atendidos: {serviceFiltered?.length | 0}</Text>
         <Text style={styles.footerText}>Total{valueFilter !== 'all' ? ' '+valueFilter: ''}:  ${totalValue}</Text>
       </View>
+      
+      <Snackbar
+          visible={showSnackBar}
+          onDismiss={onDismissSnackBar}
+          duration={1500}
+          action={{ label: 'Ok' }}
+      > Item Eliminado </Snackbar>
     </View>
   );
 

@@ -42,12 +42,12 @@ export const servicesByDate = (allService: BarberServicePrice[]): Map<string, Ba
 
 export const getNextDay = (previousDate: Date, sortedServiceDates: string[]) => {
     const findIndexDate: number = sortedServiceDates.findIndex(date => new Date(date).toDateString() === previousDate.toDateString());
-    previousDate.setDate(new Date(sortedServiceDates[findIndexDate + NUMBER_DAYS_TO_NEXT]).getDate());
+    previousDate = new Date(sortedServiceDates[findIndexDate + NUMBER_DAYS_TO_NEXT]);
     return previousDate;
   }
 export const getPreviousDay = (nextDay: Date, sortedServiceDates: string[]) => {
   const findIndexDate: number = sortedServiceDates.findIndex(date => new Date(date).toDateString() === nextDay.toDateString());
-  nextDay.setDate(new Date(sortedServiceDates[findIndexDate - NUMBER_DAYS_TO_NEXT]).getDate());
+  nextDay = new Date(sortedServiceDates[findIndexDate - NUMBER_DAYS_TO_NEXT]);
   return nextDay;
 }
 

@@ -26,7 +26,7 @@ export default class BarberPriceController {
 
     async deleteServicePrice(servicePrice: BarberServicePrice) {
         const services: BarberServicePrice[] | null = await this.getServicePrices();
-        const servicesFiltered: BarberServicePrice[] = services?.filter(value => value.service !== servicePrice.service) as BarberServicePrice[];
+        const servicesFiltered: BarberServicePrice[] = services?.filter(value => value.id !== servicePrice.id) as BarberServicePrice[];
         await this.saveAllServices(servicesFiltered);
     }
 
