@@ -1,17 +1,15 @@
-import { BarberServicePrice } from "@/constants/service-barber-price";
 import { justityAlignCenter, textButton } from "@/constants/styles";
 import React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
-interface ConfirmModalProps<T> {
-  serviceSeleted: T | null;
+interface ConfirmModalProps {
   modalVisible: boolean;
   setModalVisible: (visible: boolean) => void;
   sendRequest: (boolean: boolean) => void;
   component?: React.ReactNode;
 }
 
-export default function ConfirmModal({serviceSeleted, modalVisible, setModalVisible, sendRequest, component }: ConfirmModalProps<BarberServicePrice>) {
+export default function ConfirmModal({modalVisible, setModalVisible, sendRequest, component }: ConfirmModalProps) {
 
   return (
     <Modal 

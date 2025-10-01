@@ -1,29 +1,32 @@
 import { TextSaveConfirmModal } from '@/components/text-save-confirm-modal';
 import ConfirmModal from '@/components/ui/confirm-modal';
-import { BarberPrice, BarberServicePrice, buttons_value } from '@/constants/service-barber-price';
+import { BarberPrice, BarberServicePrice } from '@/constants/service-barber-price';
 import { servicesByDate } from '@/constants/service-table';
 import { backGroundColorItemSelected, textButton } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
+import ServicePrices from '@/hooks/service-prices';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const barberPriceController = new BarberPriceController();
+const servicesPrice = new ServicePrices();
 export default function HomeScreen() {
   const [serviceSeleted, setServiceSelected] = React.useState<BarberServicePrice | null>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [saveService, setServiceToSave] = React.useState(false);
   const [total, setTotal] = React.useState(0);
   const [allService, setAllService] = React.useState<BarberServicePrice[]>([]);
+  const [pricesByDefault, setPricesByDefault] = React.useState<BarberPrice[]>([]);
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
-    if(services && services?.length) {
-      setAllService(services);
-      services = services.filter(service => new Date(service.date).toDateString() === new Date().toDateString());
-      const totalPrices = services.reduce((acc, service) => acc + service.price, 0);
-      setTotal(totalPrices);
-    }
+    services = services !== null ? services : [];
+    setAllService(services);
+    services = services.filter(service => new Date(service.date).toDateString() === new Date().toDateString());
+    const totalPrices = services.reduce((acc, service) => acc + service.price, 0);
+    setTotal(totalPrices);
+    
   }
 
   const removeServices = async() => {  
@@ -37,9 +40,15 @@ export default function HomeScreen() {
     }
   }
 
+  const getPricesByDefault = async () => {
+    const prices = await servicesPrice.getPricesByDefault();
+    setPricesByDefault(prices);
+  }
+
   useFocusEffect(
       useCallback(() => {
         getAllService();
+        getPricesByDefault();
         if(allService.length) removeServices();
       }, []));
 
@@ -64,7 +73,7 @@ export default function HomeScreen() {
       <Text style={{...styles.headerText, fontSize: 17}}>BARBER SHOP</Text>
       <Text style={styles.totalText}>Total del dia: {total}</Text>
       <View style={styles.containerButtons}>
-      {buttons_value.map((value: BarberPrice) => (
+      {pricesByDefault.map((value: BarberPrice) => (
         <Pressable onPress={() => { setServiceSelected(value as BarberServicePrice) }} 
                   key={value.service} style={{...styles.button_select, 
                                               ...backGroundColorItemSelected(serviceSeleted?.service as string, value.service) }}  
@@ -74,8 +83,7 @@ export default function HomeScreen() {
         </Pressable>
       ))} 
       </View>   
-      <ConfirmModal 
-        serviceSeleted={serviceSeleted} 
+      <ConfirmModal
         modalVisible={modalVisible} 
         setModalVisible={setModalVisible} 
         sendRequest={setServiceToSave} 
