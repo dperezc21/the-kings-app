@@ -1,7 +1,9 @@
 import ConfirmModal from "@/components/ui/confirm-modal";
 import BarberPriceController from "@/hooks/barber-price.controller";
-import React, { useEffect } from "react";
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Snackbar } from 'react-native-paper';
 
 function TextConfirmDelete({textValue}: {textValue: string}) {
     return (
@@ -16,6 +18,9 @@ export default function Setting() {
     const [modalVisible, setModalVisible] = React.useState<boolean>(false);
     const [doRequest, setDoRequest] = React.useState<boolean>(false);
     const [textModal, setTextModel] = React.useState<string>("");
+    const [showSnackBar, setShowSnackBar] = React.useState<boolean>(false);
+    const onDismissSnackBar = () => setShowSnackBar(false);
+    const onToggleSnackBar = () => setShowSnackBar(!showSnackBar);
 
     const deleteData = async() => {
         let deleteRequest: void;
@@ -24,8 +29,19 @@ export default function Setting() {
         return deleteRequest;
     }
 
+    useFocusEffect(
+        useCallback(() => {
+            onDismissSnackBar()
+    }, []));
+
     useEffect(() => {
-        deleteData().then(() => setTextModel("")).finally(() => setDoRequest(false));
+        if(doRequest) {
+            deleteData().then(() => {
+                setTextModel("");
+                console.log("HOLA")
+                onToggleSnackBar();
+            }).finally(() => setDoRequest(false));
+        }
     }, [doRequest]);
 
     return (
@@ -48,6 +64,12 @@ export default function Setting() {
                 sendRequest={setDoRequest} 
                 component={ <TextConfirmDelete textValue={textModal} /> }
             />
+            <Snackbar
+                visible={showSnackBar}
+                onDismiss={onDismissSnackBar}
+                duration={1500}
+                action={{ label: 'Ok' }}
+            > Datos Eliminados </Snackbar>
         </View>
     )
 }
