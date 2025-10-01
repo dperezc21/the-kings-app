@@ -1,7 +1,7 @@
 import { TextDeleteConfirmModel } from '@/components/text-delete-confirm-model';
 import ConfirmModal from '@/components/ui/confirm-modal';
 import { BarberServicePrice } from '@/constants/service-barber-price';
-import { filters, hourFormatDate, NUMBER_DAYS_TO_NEXT, servicesByDate, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
+import { filters, filterServicesByDate, getNextDay, getPreviousDay, hourFormatDate, servicesByDate, spanishFormatedDate, ValueFilterInterface } from '@/constants/service-table';
 import { backGroundColorItemSelected } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
 import { useFocusEffect } from 'expo-router';
@@ -27,50 +27,41 @@ export default function Explore() {
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
-    if(services && services?.length) {
-      const servicesByDateMap = servicesByDate(services);
-      setServicesByDateMap(servicesByDateMap);
-      setAllService(services);
-    }
-  }
-
-  const filterByDate = (date: Date) => {
-    return allService.filter(service => new Date(service.date).toDateString() === date.toDateString());
+    services = services !== null ? services : [];
+    const servicesByDateMap: Map<string, BarberServicePrice[]> = servicesByDate(services);
+    setServicesByDateMap(servicesByDateMap);
+    setAllService(services);
   }
 
   const handlePrevious = () => {
-      const newDate = new Date(dateSelected);
-      newDate.setDate(newDate.getDate() - NUMBER_DAYS_TO_NEXT);
+      const newDate = getPreviousDay(new Date(dateSelected), sortedServiceDates);
       setDateSelected(newDate);
       setServicesFilteredAndTotalValue(newDate);   
   };
   
   const handleNext = () => {
-    const newDate = new Date(dateSelected);
-    newDate.setDate(newDate.getDate() + NUMBER_DAYS_TO_NEXT);
+    const newDate = getNextDay(new Date(dateSelected), sortedServiceDates);
     setDateSelected(newDate);
     setServicesFilteredAndTotalValue(newDate);
   };
+
+  const nextDayValid = () => {
+    const nextDay = getNextDay(new Date(dateSelected), sortedServiceDates);
+    const nextServicesLength = servicesByDateMap.get(nextDay.toDateString())?.length || 0;
+    setNextServicesLength(nextServicesLength > 0 || sortedServiceDates?.includes(nextDay.toDateString()));
+  }
+
+  const previousDayValid = () => {
+    let previousDay = getPreviousDay(new Date(dateSelected), sortedServiceDates);
+    const previousServicesLength = servicesByDateMap.get(previousDay.toDateString())?.length || 0;
+    setPreviousServicesLength(previousServicesLength > 0 || sortedServiceDates?.includes(previousDay.toDateString()));
+  }
 
   const setServicesFilteredAndTotalValue = (date: Date) => {
     const servicesFiltered = servicesByDateMap.get(date.toDateString()) as BarberServicePrice[];
     setServicesFiltered(servicesFiltered || []);
     setTotalValue(servicesFiltered?.reduce((acc, service) => acc + service.price, 0) || 0);
     setValueFilter('all');
-  }
-
-  const nextDayValid = () => {
-    const nextDay = new Date(dateSelected);
-    nextDay.setDate(nextDay.getDate() + NUMBER_DAYS_TO_NEXT);
-    const nextServicesLength = servicesByDateMap.get(nextDay.toDateString())?.length || 0;
-    setNextServicesLength(nextServicesLength > 0 || sortedServiceDates?.includes(nextDay.toDateString()));
-  }
-
-  const previousDayValid = () => {
-    const previousDay = new Date(dateSelected);
-    previousDay.setDate(previousDay.getDate() - NUMBER_DAYS_TO_NEXT);
-    const previousServicesLength = servicesByDateMap.get(previousDay.toDateString())?.length || 0;
-    setPreviousServicesLength(previousServicesLength > 0 || sortedServiceDates?.includes(previousDay.toDateString()));
   }
 
   useFocusEffect(
@@ -96,9 +87,10 @@ export default function Explore() {
       const services = servicesByDateMap.get(new Date(dateSelected).toDateString()) as BarberServicePrice[];
       setTotalValue(services?.length ? services?.reduce((acc, service) => acc + service.price, 0): 0);
       setServicesFiltered(services);
-      const sorted: string[] = Array.from(servicesByDateMap.keys());
+      let sorted: string[] = Array.from(servicesByDateMap.keys());
       const existsCurrentDate = sorted?.some(date => new Date(date).toDateString() === new Date().toDateString())
       if(!existsCurrentDate) sorted.unshift(new Date().toDateString());
+      sorted = sorted.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
       setSortedServiceDates(sorted);
     }
   }, [allService, servicesByDateMap]);
@@ -110,8 +102,8 @@ export default function Explore() {
 
   useEffect(() => {
     let filteredServices = [];
-    if(valueFilter === 'all') filteredServices = filterByDate(dateSelected); 
-    else filteredServices = filterByDate(dateSelected).filter(service => service.payMethod === valueFilter);
+    if(valueFilter === 'all') filteredServices = filterServicesByDate(dateSelected, allService); 
+    else filteredServices = filterServicesByDate(dateSelected, allService).filter(service => service.payMethod === valueFilter);
     setServicesFiltered(filteredServices);
     setTotalValue(filteredServices.reduce((acc, service) => acc + service.price, 0));
   }, [valueFilter]);
@@ -180,7 +172,6 @@ export default function Explore() {
       </ScrollView>
 
       <ConfirmModal
-        serviceSeleted={itemSelected}
         modalVisible={modelVisible} 
         setModalVisible={setModalVisible} 
         sendRequest={setDeleteService} 
