@@ -8,6 +8,7 @@ import ServicePrices from '@/hooks/service-prices';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Snackbar } from 'react-native-paper';
 
 const barberPriceController = new BarberPriceController();
 const servicesPrice = new ServicePrices();
@@ -18,6 +19,9 @@ export default function HomeScreen() {
   const [total, setTotal] = React.useState(0);
   const [allService, setAllService] = React.useState<BarberServicePrice[]>([]);
   const [pricesByDefault, setPricesByDefault] = React.useState<BarberPrice[]>([]);
+  const [showSnackBar, setShowSnackBar] = React.useState<boolean>(false);
+  const onDismissSnackBar = () => setShowSnackBar(false);
+  const onToggleSnackBar = () => setShowSnackBar(!showSnackBar);
 
   const getAllService = async () => {
     let services = await barberPriceController.getServicePrices() as BarberServicePrice[] | null;
@@ -42,7 +46,6 @@ export default function HomeScreen() {
 
   const getPricesByDefault = async () => {
     const prices = await servicesPrice.getPricesByDefault();
-    console.log(prices);
     setPricesByDefault(prices);
   }
 
@@ -50,6 +53,7 @@ export default function HomeScreen() {
       useCallback(() => {
         getAllService();
         getPricesByDefault();
+        onDismissSnackBar();
         if(allService.length) removeServices();
       }, []));
 
@@ -60,6 +64,7 @@ export default function HomeScreen() {
           setServiceSelected(null);
           setTotal(total + (serviceSeleted?.price || 0));
           setServiceToSave(false);
+          onToggleSnackBar();
         })
     }
   }, [saveService]);
@@ -106,6 +111,13 @@ export default function HomeScreen() {
           </TouchableOpacity> 
         </View> 
       }
+
+      <Snackbar
+          visible={showSnackBar}
+          onDismiss={onDismissSnackBar}
+          duration={1500}
+          action={{ label: 'Ok' }}
+      > Guardado </Snackbar>
      
     </View>
   );
