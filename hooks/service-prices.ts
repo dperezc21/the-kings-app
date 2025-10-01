@@ -14,7 +14,7 @@ export default class ServicePrices {
             await this.savePricesByDefault(this.pricesByDefault);
             return this.pricesByDefault;
         }
-        return this.pricesByDefault;
+        return service;
     }
 
     async savePricesByDefault(prices: BarberServicePrice[]) {

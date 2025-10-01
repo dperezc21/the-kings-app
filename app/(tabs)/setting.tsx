@@ -1,3 +1,4 @@
+import EditServices from "@/components/edit-services";
 import ConfirmModal from "@/components/ui/confirm-modal";
 import BarberPriceController from "@/hooks/barber-price.controller";
 import { useFocusEffect } from "expo-router";
@@ -21,6 +22,7 @@ export default function Setting() {
     const [showSnackBar, setShowSnackBar] = React.useState<boolean>(false);
     const onDismissSnackBar = () => setShowSnackBar(false);
     const onToggleSnackBar = () => setShowSnackBar(!showSnackBar);
+    const [editPrices, setEditPrices] = React.useState<boolean>(false);
 
     const deleteData = async() => {
         let deleteRequest: void;
@@ -31,14 +33,14 @@ export default function Setting() {
 
     useFocusEffect(
         useCallback(() => {
-            onDismissSnackBar()
+            onDismissSnackBar();
+            setEditPrices(false);
     }, []));
 
     useEffect(() => {
         if(doRequest) {
             deleteData().then(() => {
                 setTextModel("");
-                console.log("HOLA")
                 onToggleSnackBar();
             }).finally(() => setDoRequest(false));
         }
@@ -46,17 +48,20 @@ export default function Setting() {
 
     return (
         <View style={styles.viewContainer}>
-            <Pressable style={styles.button} onPress={() => alert('Settings Screen')}>
-                <Text style={styles.text}>Editar precios</Text>
-            </Pressable>
-            <Pressable style={{...styles.button, ...styles.importanButton}} 
-                onPress={() => {setTextModel("los datos de hoy"); setModalVisible(true)}}>
-                <Text style={{...styles.text, ...styles.importantTextButton}}>Borrar Datos de hoy</Text>
-            </Pressable>
-            <Pressable style={{...styles.button, ...styles.warningButton}} 
-            onPress={() => {setTextModel("todos los datos"); setModalVisible(true)}}>
-                <Text style={{...styles.text, ...styles.warningTextButton}}>Borrar Todo</Text>
-            </Pressable>
+            {!editPrices && 
+            <View>
+                <Pressable style={styles.button} onPress={() => setEditPrices(true)}>
+                    <Text style={styles.text}>Editar precios</Text>
+                </Pressable>
+                <Pressable style={{...styles.button, ...styles.importanButton}} 
+                    onPress={() => {setTextModel("los datos de hoy"); setModalVisible(true)}}>
+                    <Text style={{...styles.text, ...styles.importantTextButton}}>Borrar Datos de hoy</Text>
+                </Pressable>
+                <Pressable style={{...styles.button, ...styles.warningButton}} 
+                onPress={() => {setTextModel("todos los datos"); setModalVisible(true)}}>
+                    <Text style={{...styles.text, ...styles.warningTextButton}}>Borrar Todo</Text>
+                </Pressable>
+            </View>}
 
             <ConfirmModal 
                 modalVisible={modalVisible} 
@@ -70,6 +75,10 @@ export default function Setting() {
                 duration={1500}
                 action={{ label: 'Ok' }}
             > Datos Eliminados </Snackbar>
+
+            {editPrices && 
+                <EditServices setEditPrices={setEditPrices}></EditServices>
+            }
         </View>
     )
 }

@@ -42,6 +42,7 @@ export default function HomeScreen() {
 
   const getPricesByDefault = async () => {
     const prices = await servicesPrice.getPricesByDefault();
+    console.log(prices);
     setPricesByDefault(prices);
   }
 
