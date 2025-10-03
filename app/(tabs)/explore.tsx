@@ -6,7 +6,7 @@ import { backGroundColorItemSelected } from '@/constants/styles';
 import BarberPriceController from '@/hooks/barber-price.controller';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Snackbar } from 'react-native-paper';
 
 const barberPriceController = new BarberPriceController();
@@ -116,7 +116,7 @@ export default function Explore() {
 
   return (
     <View style={styles.container}>
-
+      <StatusBar barStyle={'dark-content'} backgroundColor={'#9c9999ff'} hidden={true} />
       {/* Contenedor de botones de navegación */}
       <View style={styles.navButtonsContainer}>
         <TouchableOpacity disabled={!previousServicesLength} 
